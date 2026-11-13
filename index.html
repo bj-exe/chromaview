@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="system">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ChromaView – Color Palette Studio</title>
+  <link rel="preload" href="fonts/TitanOne-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <meta name="description" content="Pick a color, build a palette, check contrast and color vision. Works offline.">
+  <meta name="theme-color" content="#f7f5f1">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="icons/favicon-64.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="ChromaView">
+  <script>document.documentElement.classList.add("js")</script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="i-unlock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.5-2"/></symbol>
+    <symbol id="i-undo" viewBox="0 0 24 24"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-3"/></symbol>
+    <symbol id="i-redo" viewBox="0 0 24 24"><path d="M15 14l5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h3"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    <symbol id="i-image" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/></symbol>
+    <symbol id="i-pick" viewBox="0 0 24 24"><path d="M16 4a2.1 2.1 0 0 1 3 3l-2 2-3-3z"/><path d="M14 6l4 4"/><path d="M13 7L5 15v4h4l8-8"/></symbol>
+    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.5 0 2-1 1.6-2.2-.4-1.2.3-2.3 1.6-2.3H17a4 4 0 0 0 4-4c0-5-4-9.5-9-9.5z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></symbol>
+    <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="M6 4h12v17l-6-4-6 4z"/></symbol>
+    <symbol id="i-contrast" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18a9 9 0 0 0 0-18z" fill="currentColor"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4L4 9"/><path d="M4 4v5h5"/><path d="M4 13a8 8 0 0 0 14 4l2-2"/><path d="M20 20v-5h-5"/></symbol>
+    <symbol id="i-save" viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7V4M8 20v-6h8v6"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4l10 17H2z"/><path d="M12 10v5M12 18v.01"/></symbol>
+    <symbol id="i-ext" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M11 18.5h2"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="6" height="6" rx="1"/><rect x="14.5" y="3.5" width="6" height="6" rx="1"/><rect x="3.5" y="14.5" width="6" height="6" rx="1"/><path d="M14.5 14.5h2v2h-2zM18.5 14.5h2M14.5 18.5h2M18.5 18.5v2"/></symbol>
+    <symbol id="i-terminal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 10l3 2-3 2M12.5 15h4.5"/></symbol>
+    <symbol id="i-layers" viewBox="0 0 24 24"><path d="M12 3l9 5-9 5-9-5z"/><path d="M3 13l9 5 9-5"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/><path d="M10 20v-6h4v6"/></symbol>
+    <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M5 10a10 10 0 0 1 4-2.3M19 10a10 10 0 0 0-5-2.8M8.5 13.5a5 5 0 0 1 2-1.2M15.5 13.5a5 5 0 0 0-1.4-1M12 18.5v.01"/></symbol>
+    <symbol id="i-github" viewBox="0 0 24 24"><path d="M9 19c-4 1.3-4-2-6-2.5M15 21v-3.2a3 3 0 0 0-.8-2.3c2.7-.3 5.5-1.3 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.3 4.3 0 0 0-.1-3.2s-1-.3-3.4 1.3a11.600 11.600 0 0 0-6 0C6.500 2.800 5.500 3.100 5.500 3.100a4.300 4.300 0 0 0-.1 3.200A4.600 4.600 0 0 0 4.100 9.500c0 4.600 2.800 5.700 5.500 6A3 3 0 0 0 8.800 17.800V21"/></symbol>
+  </defs>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="app">
+
+  <!-- ===== Top pill navigation ===== -->
+  <header class="pillwrap">
+    <nav class="pillbar" aria-label="Main">
+      <a class="brand" href="#/home" aria-label="ChromaView home">
+        <img class="logo" src="icons/logo-128.png" alt="" width="36" height="36">
+        <span class="wm">ChromaView</span>
+      </a>
+      <div class="pill-links" id="nav"></div>
+      <div class="pill-end">
+        <button type="button" class="pill-cta" data-scroll="download">Get the app <svg class="ic" aria-hidden="true"><use href="#i-ext"/></svg></button>
+        <button class="pill-icon" id="themeCycle" type="button" aria-label="Change appearance"><svg class="ic" aria-hidden="true"><use href="#i-monitor"/></svg></button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== Main ===== -->
+  <main id="main">
+    <div class="statusbar" id="statusbar">
+      <div class="current" id="strip"></div>
+    </div>
+
+    <!-- HOME / LANDING -->
+    <section class="view wide" id="view-home" hidden aria-labelledby="h-home">
+      <div class="hero">
+        <div class="hero-copy">
+          <p class="kicker"><span class="dot"></span>Color palette playground</p>
+          <h1 id="h-home">Color, made <em>simple.</em></h1>
+          <p class="lead">Pick a color, grow it into a balanced palette, and check that it reads for everyone. ChromaView puts a friendly color studio in your pocket, and it keeps working when the internet doesn’t.</p>
+          <div class="hero-cta">
+            <a class="btn primary lg" href="#/pick">Open ChromaView <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+            <button class="btn lg" type="button" data-scroll="download"><svg class="ic" aria-hidden="true"><use href="#i-phone"/></svg>Get the app</button>
+          </div>
+          <ul class="promises">
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>No account needed</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Saved on your device</li>
+            <li><svg class="ic" aria-hidden="true"><use href="#i-check"/></svg>Works offline</li>
+          </ul>
+        </div>
+        <div class="hero-card" aria-label="Live palette preview">
+          <div class="hero-stripes" id="heroStripes" role="list"></div>
+          <div class="hero-foot"><span class="muted">A new palette every time. Give it a try.</span>
+            <button class="btn sm" type="button" id="heroShuffle"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg>Shuffle</button></div>
+        </div>
+      </div>
+
+      <section class="section about reveal" id="about" aria-labelledby="h-about">
+        <p class="eyebrow">What is ChromaView?</p>
+        <h2 class="sec-title" id="h-about">A small studio for choosing colors with confidence.</h2>
+        <p class="sec-text">Whether you are designing an app, decorating a room or making a poster, ChromaView helps you go from “I like this color” to a finished, readable palette. Start from the color wheel or a photo, shuffle until it feels right, then test it so your text is easy to read for everyone, including people with color vision differences.</p>
+      </section>
+
+      <section class="section reveal" id="features" aria-labelledby="h-features">
+        <p class="eyebrow">Features</p>
+        <h2 class="sec-title" id="h-features">Everything you need, nothing you don’t.</h2>
+        <div class="features stagger">
+          <article class="feature"><span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-pick"/></svg></span><h3>Wheel &amp; image picker</h3><p>Drag on the color wheel, type a HEX, RGB or HSL value, or tap any pixel in a photo to borrow its color.</p></article>
+          <article class="feature"><span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-palette"/></svg></span><h3>Smart palettes</h3><p>Generate balanced palettes around your base color. Lock the colors you love and shuffle the rest.</p></article>
+          <article class="feature"><span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-layers"/></svg></span><h3>Shades &amp; tints</h3><p>See lighter and darker versions of any color, with full codes and one-tap copy.</p></article>
+          <article class="feature"><span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-contrast"/></svg></span><h3>Contrast checker</h3><p>Test every color pair against the WCAG AA and AAA guidelines so your text is always readable.</p></article>
+          <article class="feature"><span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-eye"/></svg></span><h3>Color vision preview</h3><p>See how a palette looks with protanopia, deuteranopia, tritanopia and achromatopsia.</p></article>
+          <article class="feature"><span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-bookmark"/></svg></span><h3>Save, export &amp; undo</h3><p>Keep favorite palettes on your device, export them as JSON, and undo any change with a tap.</p></article>
+        </div>
+      </section>
+
+      <section class="section reveal" id="download" aria-labelledby="h-download">
+        <div class="dl-head">
+          <div>
+            <p class="eyebrow">App download</p>
+            <h2 class="sec-title" id="h-download">Take it with you, even without internet.</h2>
+            <p class="sec-text">Install ChromaView on your phone once, and it works anywhere with no mobile data. Choose whichever way is easiest for you.</p>
+          </div>
+          <button class="btn primary" type="button" id="installBtn" hidden><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Install on this device</button>
+        </div>
+
+        <div class="dl-grid stagger">
+          <article class="dl-card">
+            <span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-phone"/></svg></span>
+            <h3>Download the Android APK</h3>
+            <p>The quickest way to get the app on an Android phone.</p>
+            <a class="btn primary" href="https://github.com/bj-exe/chromaview/releases/latest" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-download"/></svg>Download APK</a>
+          </article>
+          <article class="dl-card">
+            <span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-qr"/></svg></span>
+            <h3>Scan the QR code</h3>
+            <p>Point your phone’s camera at the code to open the download page.</p>
+            <img class="qr" src="icons/qr.svg" alt="QR code that opens the ChromaView download page" width="140" height="140">
+          </article>
+          <article class="dl-card">
+            <span class="f-ic"><svg class="ic lg" aria-hidden="true"><use href="#i-terminal"/></svg></span>
+            <h3>Clone it from GitHub</h3>
+            <p>Prefer to build it yourself? Grab the source and run it anywhere.</p>
+            <div class="code"><code id="cloneCmd">git clone https://github.com/bj-exe/chromaview.git</code>
+              <button type="button" class="icon-btn" data-copy="git clone https://github.com/bj-exe/chromaview.git" aria-label="Copy clone command"><span class="copyic"><svg class="ic i-copy" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ic i-check" aria-hidden="true"><use href="#i-check"/></svg></span></button></div>
+            <a class="btn" href="https://github.com/bj-exe/chromaview" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-github"/></svg>View on GitHub</a>
+          </article>
+        </div>
+
+        <div class="setup stagger">
+          <div>
+            <h3 class="setup-title">Set up on Android in 3 steps</h3>
+            <ol class="steps">
+              <li><b>Download</b> the APK on your phone using the button or QR code above.</li>
+              <li><b>Allow the install</b> if Android asks. Open Settings, then Install unknown apps, and allow your browser.</li>
+              <li><b>Open ChromaView.</b> Everything is stored on your phone, so it works with no connection.</li>
+            </ol>
+          </div>
+          <div class="setup-note">
+            <svg class="ic lg" aria-hidden="true"><use href="#i-wifioff"/></svg>
+            <p><b>On iPhone?</b> Open ChromaView in Safari, tap Share, then Add to Home Screen. It works offline too.</p>
+          </div>
+        </div>
+      </section>
+
+      <footer class="site-footer reveal">
+        <div class="foot-brand">
+          <a class="brand" href="#/home"><img class="logo" src="icons/logo-128.png" alt="" width="36" height="36"><span class="wm">ChromaView</span></a>
+          <p class="muted">Color tools that work anywhere, even offline.</p>
+        </div>
+        <nav class="foot-col" aria-label="Product">
+          <h4>Product</h4>
+          <a href="#/pick">Open ChromaView</a>
+          <button type="button" class="linklike" data-scroll="features">Features</button>
+          <button type="button" class="linklike" data-scroll="download">App download</button>
+        </nav>
+        <nav class="foot-col" aria-label="Project">
+          <h4>Project</h4>
+          <a href="https://github.com/bj-exe/chromaview" target="_blank" rel="noopener">GitHub</a>
+        </nav>
+        <p class="copyright"><span>© 2026 ChromaView</span><span>Made by <a href="https://github.com/bj-exe" target="_blank" rel="noopener">0xEXE</a></span></p>
+      </footer>
+    </section>
+
+    <!-- PICK -->
+    <section class="view" id="view-pick" hidden aria-labelledby="h-pick">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Your color studio</p>
+          <h1 id="h-pick">Find your <em>color.</em></h1>
+          <p class="sub">Start with a feeling, find a color that fits.</p>
+        </div>
+        <div class="head-action">
+          <button class="btn primary" type="button" data-act="make-palette">Make a palette <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+        </div>
+      </header>
+
+      <div class="pick-grid">
+        <section class="card" aria-labelledby="t-start">
+          <div class="card-head">
+            <div><h2 id="t-start">Choose a starting point</h2><p class="muted">Drag on the wheel, or enter a color you love.</p></div>
+          </div>
+
+          <div class="pick-body">
+            <div class="wheel-col">
+              <div class="wheel-wrap">
+                <canvas id="wheel" tabindex="0" role="application" aria-label="Color wheel. Arrow left and right change hue, arrow up and down change saturation."></canvas>
+              </div>
+              <label class="bright"><span>Brightness</span>
+                <input type="range" id="bright" min="0" max="100" value="50" aria-label="Brightness">
+              </label>
+            </div>
+
+            <div class="readout-col">
+              <button class="preview" id="preview" type="button" data-copy="" aria-label="Copy hex code">
+                <span class="preview-hex" id="pvHex">#4B2E83</span>
+                <span class="preview-copy"><span class="copyic"><svg class="ic i-copy" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ic i-check" aria-hidden="true"><use href="#i-check"/></svg></span></span>
+              </button>
+
+              <div class="chips">
+                <button type="button" class="chip" id="chipHex" data-copy=""><small>HEX</small><b></b><span class="copyic"><svg class="ic i-copy" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ic i-check" aria-hidden="true"><use href="#i-check"/></svg></span></button>
+                <button type="button" class="chip" id="chipRgb" data-copy=""><small>RGB</small><b></b><span class="copyic"><svg class="ic i-copy" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ic i-check" aria-hidden="true"><use href="#i-check"/></svg></span></button>
+                <button type="button" class="chip" id="chipHsl" data-copy=""><small>HSL</small><b></b><span class="copyic"><svg class="ic i-copy" aria-hidden="true"><use href="#i-copy"/></svg><svg class="ic i-check" aria-hidden="true"><use href="#i-check"/></svg></span></button>
+              </div>
+
+              <div class="fields">
+                <div class="field">
+                  <label for="hexIn">Type a color</label>
+                  <input id="hexIn" type="text" inputmode="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="#4B2E83" aria-describedby="hexErr">
+                  <p class="err" id="hexErr" role="alert" hidden></p>
+                </div>
+                <div class="field">
+                  <label for="rgbIn">RGB</label>
+                  <input id="rgbIn" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="75, 46, 131" aria-describedby="rgbErr">
+                  <p class="err" id="rgbErr" role="alert" hidden></p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="image-pick">
+            <input type="file" id="imgFile" accept="image/*" hidden>
+            <button type="button" class="row-btn" id="imgBtn">
+              <svg class="ic lg" aria-hidden="true"><use href="#i-image"/></svg>
+              <span><strong>Pick from an image</strong><small>Upload a photo, then tap it to sample a pixel</small></span>
+              <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg>
+            </button>
+            <p class="err" id="imgErr" role="alert" hidden></p>
+            <div id="imgStage" hidden>
+              <canvas id="imgCanvas" aria-label="Your image. Tap to sample a color."></canvas>
+              <div class="stage-row"><span class="muted">Tap or drag on the image to sample a color.</span>
+                <button type="button" class="btn ghost sm" id="imgClear"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg>Remove image</button></div>
+            </div>
+          </div>
+        </section>
+
+        <div class="side-stack">
+          <section class="card" aria-labelledby="t-shades">
+            <div class="card-head">
+              <div><h2 id="t-shades">Shades &amp; tints</h2><p class="muted">Tap any swatch to copy it.</p></div>
+            </div>
+            <div class="shades" id="shades"></div>
+          </section>
+
+          <section class="card accent" aria-labelledby="t-make">
+            <div class="card-head">
+              <div><h2 class="serif" id="t-make">Make it a palette</h2><p class="muted" id="makeSub">Build a balanced set around #4B2E83.</p></div>
+            </div>
+            <div class="make-row">
+              <div class="stepper" role="group" aria-label="Number of colors">
+                <button type="button" class="icon-btn round" id="cntDown" aria-label="Fewer colors"><svg class="ic" aria-hidden="true"><use href="#i-minus"/></svg></button>
+                <output id="cntVal" aria-live="polite">5</output>
+                <button type="button" class="icon-btn round" id="cntUp" aria-label="More colors"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg></button>
+                <span class="muted tiny">colors (2–10)</span>
+              </div>
+              <button class="btn primary" type="button" data-act="make-palette">Generate palette <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <section class="card build" aria-labelledby="t-build">
+        <div class="card-head">
+          <div><h2 id="t-build">Build your own palette</h2><p class="muted">Add colors one at a time, no generating needed.</p></div>
+          <p class="muted tiny" id="bCount">0 of 10</p>
+        </div>
+        <form class="build-form" id="bForm" novalidate>
+          <label class="sr" for="bIn">Color to add</label>
+          <input id="bIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type hex or rgb, e.g. #FF909E or 255, 144, 158" aria-describedby="bErr">
+          <button class="btn primary" type="submit"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add color</button>
+          <button class="btn" type="button" id="bPicked"><svg class="ic" aria-hidden="true"><use href="#i-pick"/></svg><span>Add picked color</span></button>
+        </form>
+        <p class="err" id="bErr" role="alert" hidden></p>
+        <div class="build-row" id="bRow" role="list" aria-label="Colors you added"></div>
+        <p class="build-empty" id="bEmpty">Your colors will appear here.</p>
+        <div class="build-actions">
+          <button class="btn primary" type="button" id="bSave"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg><span id="bSaveLbl">Save</span></button>
+          <button class="btn" type="button" id="bUndo"><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg>Undo</button>
+          <button class="btn" type="button" id="bReset"><svg class="ic" aria-hidden="true"><use href="#i-reset"/></svg>Reset</button>
+          <span class="build-sep" aria-hidden="true"></span>
+          <button class="btn ghost" type="button" id="bCheck"><svg class="ic" aria-hidden="true"><use href="#i-contrast"/></svg>Check contrast</button>
+          <button class="btn ghost" type="button" id="bVision"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>Color vision</button>
+        </div>
+        <p class="tray-hint" id="bHint" aria-live="polite"></p>
+      </section>
+    </section>
+
+    <!-- PALETTE -->
+    <section class="view" id="view-palette" hidden aria-labelledby="h-palette">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">The color story</p>
+          <h1 id="h-palette">A palette with <em>feeling.</em></h1>
+          <p class="sub">Lock a color to keep it, then find a fresh combination.</p>
+        </div>
+        <div class="head-action">
+          <button class="btn primary" type="button" id="genBtn"><svg class="ic" aria-hidden="true"><use href="#i-refresh"/></svg>Generate again <kbd id="genKey">Space</kbd></button>
+        </div>
+      </header>
+
+      <div class="toolbar">
+        <label class="name-field">
+          <span class="sr">Palette name</span>
+          <input id="palName" type="text" maxlength="40" autocomplete="off" placeholder="Name this palette">
+          <svg class="ic" aria-hidden="true"><use href="#i-pencil"/></svg>
+        </label>
+        <div class="tools">
+          <button class="btn" type="button" id="addColor"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add color</button>
+          <button class="btn" type="button" id="copyAll"><svg class="ic" aria-hidden="true"><use href="#i-copy"/></svg>Copy HEX codes</button>
+          <button class="btn" type="button" id="savePal"><svg class="ic" aria-hidden="true"><use href="#i-save"/></svg><span id="saveLbl">Save palette</span></button>
+          <button class="btn" type="button" id="visionBtn"><svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg>Color vision</button>
+          <span class="tool-sep" aria-hidden="true"></span>
+          <button class="icon-btn" type="button" id="undoBtn" aria-label="Undo" title="Undo (Ctrl/⌘ + Z)"><svg class="ic" aria-hidden="true"><use href="#i-undo"/></svg></button>
+          <button class="icon-btn" type="button" id="redoBtn" aria-label="Redo" title="Redo (Ctrl/⌘ + Shift + Z)"><svg class="ic" aria-hidden="true"><use href="#i-redo"/></svg></button>
+          <button class="icon-btn" type="button" id="histBtn" aria-label="History" title="History" aria-haspopup="true"><svg class="ic" aria-hidden="true"><use href="#i-history"/></svg></button>
+        </div>
+      </div>
+
+      <div class="stripes" id="stripes" role="list" aria-label="Palette colors"></div>
+      <p class="notice" id="lockNote" role="status" hidden>All colors are locked. Unlock one to generate again.</p>
+
+      <div class="hint" id="hint">
+        <span>✳ <b>Tip:</b> <span id="hintText">Lock the colors you like, then press Space to refresh the rest.</span></span>
+        <button type="button" class="btn ghost sm" id="hintOk">Got it</button>
+      </div>
+    </section>
+
+    <!-- SAVED -->
+    <section class="view" id="view-saved" hidden aria-labelledby="h-saved">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Your personal library</p>
+          <h1 id="h-saved">Colors worth <em>keeping.</em></h1>
+          <p class="sub">Your palettes, saved right here on this device.</p>
+        </div>
+        <div class="head-action">
+          <button class="btn primary" type="button" id="newPalBtn"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>New palette</button>
+        </div>
+      </header>
+      <div id="savedGrid"></div>
+    </section>
+
+    <!-- CHECK -->
+    <section class="view" id="view-check" hidden aria-labelledby="h-check">
+      <header class="page-head">
+        <div>
+          <p class="eyebrow">Accessibility, made visible</p>
+          <h1 id="h-check">Make sure it <em>reads.</em></h1>
+          <p class="sub">See how your colors hold up for real-world text.</p>
+        </div>
+        <div class="head-action">
+          <button class="btn primary" type="button" id="addColorBtn"><svg class="ic" aria-hidden="true"><use href="#i-plus"/></svg>Add a color</button>
+        </div>
+      </header>
+
+      <section class="card" aria-label="Colors in this check">
+        <div class="check-top">
+          <div class="grow">
+            <p class="eyebrow tight">Colors in this check</p>
+            <div class="color-chips" id="chkChips"></div>
+          </div>
+          <div class="check-actions">
+            <button class="btn" type="button" id="usePalBtn" aria-haspopup="true">Use a saved palette <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+            <button class="btn ghost" type="button" id="chkReset"><svg class="ic" aria-hidden="true"><use href="#i-reset"/></svg>Reset</button>
+          </div>
+        </div>
+        <form class="add-form" id="addForm" hidden novalidate>
+          <label for="chkIn" class="sr">Color to add</label>
+          <input id="chkIn" type="text" autocomplete="off" spellcheck="false" placeholder="#F4A259 or rgb(244, 162, 89)" aria-describedby="chkErr">
+          <button class="btn primary" type="submit">Add</button>
+          <button class="btn ghost" type="button" id="addCancel">Cancel</button>
+          <p class="err" id="chkErr" role="alert" hidden></p>
+        </form>
+      </section>
+
+      <div class="check-bar">
+        <h2>Pairwise contrast</h2>
+        <label class="switch"><input type="checkbox" id="onlyPass"><span class="track" aria-hidden="true"></span><span>Only passing (AA+)</span></label>
+      </div>
+      <div class="legend" aria-label="Legend"><span><b class="badge ok">AAA</b> 7:1+ any text</span><span><b class="badge ok">AA</b> 4.5:1+ normal text</span><span><b class="badge warn">AA Large</b> 3:1+ big text only</span><span><b class="badge bad">Fail</b> below 3:1</span></div>
+      <div class="pairs" id="pairs"></div>
+    </section>
+  </main>
+
+  <!-- ===== Bottom tabs (mobile) ===== -->
+  <nav class="tabbar" id="tabbar" aria-label="Main"></nav>
+</div>
+
+<!-- Dialogs -->
+<dialog class="sheet" id="visionDlg" aria-labelledby="vTitle">
+  <div class="sheet-in">
+    <div class="grab" aria-hidden="true"></div>
+    <button class="icon-btn close" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    <p class="eyebrow">A different perspective</p>
+    <h2 class="serif big" id="vTitle">Color vision preview</h2>
+    <p class="muted">See how this palette may appear with different types of color vision.</p>
+    <div class="seg" id="vTabs" role="tablist" aria-label="Type of color vision">
+      <button role="tab" data-v="protanopia" aria-selected="true">Protanopia</button>
+      <button role="tab" data-v="deuteranopia" aria-selected="false">Deuteranopia</button>
+      <button role="tab" data-v="tritanopia" aria-selected="false">Tritanopia</button>
+      <button role="tab" data-v="achromatopsia" aria-selected="false">Achromatopsia</button>
+    </div>
+    <p class="eyebrow tight">Original</p>
+    <div class="vrow" id="vOrig"></div>
+    <p class="eyebrow tight" id="vLabel">Protanopia</p>
+    <div class="vrow" id="vSim"></div>
+    <p class="muted tiny">A helpful approximation, not a clinical simulation.</p>
+  </div>
+</dialog>
+
+<dialog class="sheet small" id="savedDlg" aria-labelledby="sTitle">
+  <div class="sheet-in">
+    <div class="grab" aria-hidden="true"></div>
+    <button class="icon-btn close" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    <p class="eyebrow ok-ink">✓ Done</p>
+    <h2 class="serif big" id="sTitle">Saved to your library</h2>
+    <p class="muted" id="sName"></p>
+    <div class="vrow" id="sStrip"></div>
+    <div class="dlg-actions">
+      <button class="btn primary" type="button" id="sView">View saved <svg class="ic" aria-hidden="true"><use href="#i-arrow"/></svg></button>
+      <button class="btn" type="button" id="sCheck">Check contrast</button>
+      <button class="btn ghost" type="button" data-close>Keep editing</button>
+    </div>
+  </div>
+</dialog>
+
+<dialog class="sheet small" id="colorDlg" aria-labelledby="cTitle">
+  <form class="sheet-in" id="colorForm" novalidate>
+    <div class="grab" aria-hidden="true"></div>
+    <button class="icon-btn close" type="button" data-close aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
+    <p class="eyebrow" id="cEyebrow">Build your own</p>
+    <h2 class="serif big" id="cTitle">Add a color</h2>
+    <p class="muted" id="cSub">Tap the swatch to pick a color, or type a HEX, RGB or HSL value.</p>
+    <div class="cpick">
+      <label class="cswatch" title="Choose a color">
+        <input type="color" id="cNative" value="#4b2e83" aria-label="Choose a color">
+        <span id="cPrev" aria-hidden="true"></span>
+      </label>
+      <div class="cfield">
+        <label for="cText">Color value</label>
+        <input type="text" id="cText" autocomplete="off" spellcheck="false" placeholder="#F4A259" aria-describedby="cErr">
+        <p class="err" id="cErr" role="alert" hidden></p>
+      </div>
+    </div>
+    <button type="button" class="btn ghost sm" id="cUsePick"><svg class="ic" aria-hidden="true"><use href="#i-pick"/></svg>Use the color from Pick <span class="mono" id="cPickHex"></span></button>
+    <div class="dlg-actions">
+      <button class="btn primary" type="submit" id="cSubmit">Add color</button>
+      <button class="btn ghost" type="button" data-close>Cancel</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="popover" id="pop" hidden></div>
+<div class="toasts" id="toasts" aria-live="polite" aria-atomic="false"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
