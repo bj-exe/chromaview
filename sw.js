@@ -1,6 +1,6 @@
 // ChromaView service worker – everything is local, so the app runs with no connection.
 // Bump CACHE when you change any file so phones pick up the new version.
-const CACHE = "chromaview-v7";
+const CACHE = "chromaview-v8";
 const CORE = ["./", "index.html", "style.css", "app.js", "manifest.json", "fonts/TitanOne-Regular.ttf",
   "icons/logo.png", "icons/logo-128.png", "icons/favicon-64.png", "icons/qr.svg",
   "icons/icon-192.png", "icons/icon-512.png", "icons/icon-maskable-512.png"];
